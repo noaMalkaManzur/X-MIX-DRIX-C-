@@ -1,0 +1,8 @@
+C:\Users\אתי\source\repos\B23 Ex02 Noa Malka Manzur 207375163 Ohad Badav 317711612\UI X MIX\bin\Debug\UI X MIX.exe
+C:\Users\אתי\source\repos\B23 Ex02 Noa Malka Manzur 207375163 Ohad Badav 317711612\UI X MIX\bin\Debug\UI X MIX.pdb
+C:\Users\אתי\source\repos\B23 Ex02 Noa Malka Manzur 207375163 Ohad Badav 317711612\UI X MIX\obj\Debug\UI X MIX.csprojAssemblyReference.cache
+C:\Users\אתי\source\repos\B23 Ex02 Noa Malka Manzur 207375163 Ohad Badav 317711612\UI X MIX\obj\Debug\UI X MIX.csproj.CoreCompileInputs.cache
+C:\Users\אתי\source\repos\B23 Ex02 Noa Malka Manzur 207375163 Ohad Badav 317711612\UI X MIX\obj\Debug\UI X MIX.exe
+C:\Users\אתי\source\repos\B23 Ex02 Noa Malka Manzur 207375163 Ohad Badav 317711612\UI X MIX\obj\Debug\UI X MIX.pdb
+C:\Users\אתי\source\repos\B23 Ex02 Noa Malka Manzur 207375163 Ohad Badav 317711612\UI X MIX\bin\Debug\Ex02.ConsoleUtils.dll
+C:\Users\אתי\source\repos\B23 Ex02 Noa Malka Manzur 207375163 Ohad Badav 317711612\UI X MIX\obj\Debug\UI X MIX.csproj.CopyComplete
