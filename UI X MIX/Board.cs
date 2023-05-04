@@ -22,7 +22,9 @@ namespace UI_X_MIX
                 {
                     m_Board[i, j] = ' ';
                 }
-            }   
+            }
+            Screen.Clear();
+            PrintBoard();
         }
         public void PrintBoard()
         {
@@ -43,13 +45,46 @@ namespace UI_X_MIX
                 Console.WriteLine();
             }
         }
-        public void updateBoardInPosition(char i_Symbol, Point i_Position)
+        public bool updateBoardInPosition(char i_Symbol, Point i_Position)
         {
             Screen.Clear();
-            m_Board[i_Position.x, i_Position.y] = i_Symbol;
+            m_Board[i_Position.x, i_Position.y ] = i_Symbol;
+            bool wonGame = checkIfWon( i_Position);
             PrintBoard();
+
+            return wonGame;
         }
 
+        private bool checkIfWon(Point i_Position)
+        {
+
+            bool rowWonGame = true;
+            bool colWonGame = true;
+            bool diaWonGame1 = true;
+            bool diaWonGame2 = true;
+
+            for (int i = 0; i < m_Size - 1; i++)
+            {   
+                if (m_Board[i_Position.x , i] != m_Board[i_Position.x, i + 1] )
+                {
+                    rowWonGame = false;
+                }
+                if (m_Board[i, i_Position.y] != m_Board[i + 1, i_Position.y])
+                {
+                    colWonGame = false;
+                }
+                if (m_Board[i, i] != m_Board[i + 1, i + 1] || m_Board[i, i] == ' ')
+                {
+                    diaWonGame1 = false;
+                }         
+                if (m_Board[i, m_Size - i - 1] != m_Board[i + 1, m_Size - i - 2] ||  m_Board[i + 1, m_Size - i - 2] == ' ')
+                {
+                    diaWonGame2 = false;
+                }
+                
+            }     
+            return rowWonGame || colWonGame || diaWonGame1 || diaWonGame2;
+        }
 
     }
 }
