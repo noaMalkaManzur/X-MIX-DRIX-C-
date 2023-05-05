@@ -7,8 +7,16 @@ namespace UI_X_MIX
 {
     public struct Point
     {
-        public int x { get; set; }
-        public int y { get; set; }
+        public int x;
+        public int y;
+
+        public Point(int xValue, int yValue)
+        {
+            x = xValue;
+            y = yValue;
+        }
 
     }
+
 }
+
