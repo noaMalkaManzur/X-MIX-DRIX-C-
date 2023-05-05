@@ -9,8 +9,8 @@ namespace UI_X_MIX
     class Board
     {
         int m_Size;
-        char [,] m_Board;
-        
+        char[,] m_Board;
+
         public void initBoard(int i_Size)
         {
             m_Size = i_Size;
@@ -40,7 +40,7 @@ namespace UI_X_MIX
                 Console.Write((i + 1) + " ");
                 for (int j = 0; j < m_Size; j++)
                 {
-                    Console.Write(m_Board[i , j] + " | ");
+                    Console.Write(m_Board[i, j] + " | ");
                 }
                 Console.WriteLine();
             }
@@ -48,8 +48,8 @@ namespace UI_X_MIX
         public bool updateBoardInPosition(char i_Symbol, Point i_Position)
         {
             Screen.Clear();
-            m_Board[i_Position.x, i_Position.y ] = i_Symbol;
-            bool wonGame = checkIfWon( i_Position);
+            m_Board[i_Position.x, i_Position.y] = i_Symbol;
+            bool wonGame = checkIfWon(i_Position);
             PrintBoard();
 
             return wonGame;
@@ -58,7 +58,13 @@ namespace UI_X_MIX
         {
             return m_Board[i_Coordinate.x, i_Coordinate.y] == ' ';
         }
-        
+        public int Size
+        {
+            get{
+                 return m_Size;
+            }
+        }
+
         private bool checkIfWon(Point i_Position)
         {
 
@@ -68,8 +74,8 @@ namespace UI_X_MIX
             bool diaWonGame2 = true;
 
             for (int i = 0; i < m_Size - 1; i++)
-            {   
-                if (m_Board[i_Position.x , i] != m_Board[i_Position.x, i + 1] )
+            {
+                if (m_Board[i_Position.x, i] != m_Board[i_Position.x, i + 1])
                 {
                     rowWonGame = false;
                 }
@@ -80,132 +86,264 @@ namespace UI_X_MIX
                 if (m_Board[i, i] != m_Board[i + 1, i + 1] || m_Board[i, i] == ' ')
                 {
                     diaWonGame1 = false;
-                }         
-                if (m_Board[i, m_Size - i - 1] != m_Board[i + 1, m_Size - i - 2] ||  m_Board[i + 1, m_Size - i - 2] == ' ')
+                }
+                if (m_Board[i, m_Size - i - 1] != m_Board[i + 1, m_Size - i - 2] || m_Board[i + 1, m_Size - i - 2] == ' ')
                 {
                     diaWonGame2 = false;
                 }
-                
-            }     
+
+            }
             return rowWonGame || colWonGame || diaWonGame1 || diaWonGame2;
         }
-
-        /*public static Point FindWinningMove(Board board, char player)
+        public Point? FindWinningMove(char symbol)
         {
-            int size = board.Size;
-
-            // Check rows
-            for (int i = 0; i < size; i++)
+            // Check all rows
+            for (int row = 0; row < m_Size; row++)
             {
-                int rowSum = 0;
-                int emptyRowCol = -1;
+                int emptyCount = 0;
+                int symbolCount = 0;
+                int emptyCol = -1;
 
-                for (int j = 0; j < size; j++)
+                for (int col = 0; col < m_Size; col++)
                 {
-                    char cell = board.GetCell(new Point(i, j));
-                    if (cell == player)
+                    if (getSymbolAtCoordinate(new Point(row, col)) == ' ')
                     {
-                        rowSum++;
+                        emptyCount++;
+                        emptyCol = col;
                     }
-                    else if (cell == Board.k_EmptyCell)
+                    else if (getSymbolAtCoordinate(new Point(row, col)) == symbol)
                     {
-                        emptyRowCol = j;
+                        symbolCount++;
                     }
-                    else
-                    {
-                        // This row doesn't contain a winning move for the player
-                        break;
-                    }
+                }
 
-                    if (j == size - 1 && rowSum == size - 1 && emptyRowCol != -1)
-                    {
-                        return new Point(i, emptyRowCol);
-                    }
+                if (emptyCount == 1 && symbolCount == m_Size - 1)
+                {
+                    return new Point(row, emptyCol);
                 }
             }
 
-            // Check columns
-            for (int j = 0; j < size; j++)
+            // Check all columns
+            for (int col = 0; col < m_Size; col++)
             {
-                int colSum = 0;
-                int emptyColRow = -1;
+                int emptyCount = 0;
+                int symbolCount = 0;
+                int emptyRow = -1;
 
-                for (int i = 0; i < size; i++)
+                for (int row = 0; row < m_Size; row++)
                 {
-                    char cell = board.GetCell(new Point(i, j));
-                    if (cell == player)
+                    if (getSymbolAtCoordinate(new Point(row, col)) == ' ')
                     {
-                        colSum++;
+                        emptyCount++;
+                        emptyRow = row;
                     }
-                    else if (cell == Board.k_EmptyCell)
+                    else if (getSymbolAtCoordinate(new Point(row, col)) == symbol)
                     {
-                        emptyColRow = i;
+                        symbolCount++;
                     }
-                    else
-                    {
-                        // This column doesn't contain a winning move for the player
-                        break;
-                    }
+                }
 
-                    if (i == size - 1 && colSum == size - 1 && emptyColRow != -1)
-                    {
-                        return new Point(emptyColRow, j);
-                    }
+                if (emptyCount == 1 && symbolCount == m_Size - 1)
+                {
+                    return new Point(emptyRow, col);
                 }
             }
 
-            // Check diagonals
-            int diagSum = 0;
+            // Check diagonal from top-left to bottom-right
+            int diagCount = 0;
             int emptyDiagRow = -1;
-            for (int i = 0; i < size; i++)
+            int emptyDiagCol = -1;
+
+            for (int i = 0; i < m_Size; i++)
             {
-                char cell = board.GetCell(new Point(i, i));
-                if (cell == player)
+                char symbolAtCoordinate = getSymbolAtCoordinate(new Point(i, i));
+
+                if (symbolAtCoordinate == symbol)
                 {
-                    diagSum++;
+                    diagCount++;
                 }
-                else if (cell == Board.k_EmptyCell)
+                else if (symbolAtCoordinate == ' ')
                 {
                     emptyDiagRow = i;
-                }
-                else
-                {
-                    // This diagonal doesn't contain a winning move for the player
-                    break;
-                }
-
-                if (i == size - 1 && diagSum == size - 1 && emptyDiagRow != -1)
-                {
-                    return new Point(emptyDiagRow, emptyDiagRow);
+                    emptyDiagCol = i;
                 }
             }
 
-            int reverseDiagSum = 0;
-            int emptyReverseDiagRow = -1;
-            for (int i = 0; i < size; i++)
+            if (diagCount == m_Size - 1 && emptyDiagRow != -1 && emptyDiagCol != -1)
             {
-                char cell = board.GetCell(new Point(i, size - 1 - i));
-                if (cell == player)
-                {
-                    reverseDiagSum++;
-                }
-                else if (cell == Board.k_EmptyCell)
-                {
-                    emptyReverseDiagRow = i;
-                }
-                else
-                {
-                    // This diagonal doesn't contain a winning move for the player
-                    break;
-                }
+                return new Point(emptyDiagRow, emptyDiagCol);
+            }
 
-                if (i == size - 1 && reverseDiagSum == size - 1 && emptyReverseDiagRow != -1)
+            // Check diagonal from bottom-left to top-right
+            diagCount = 0;
+            emptyDiagRow = -1;
+            emptyDiagCol = -1;
+
+            for (int i = 0; i < m_Size; i++)
+            {
+                char symbolAtCoordinate = getSymbolAtCoordinate(new Point(i, m_Size - i - 1));
+
+                if (symbolAtCoordinate == symbol)
                 {
-                    return new Point(emptyReverseDiagRow, size - 1 - emptyReverseDiagRow);
+                    diagCount++;
+                }
+                else if (symbolAtCoordinate == ' ')
+                {
+                    emptyDiagRow = i;
+                    emptyDiagCol = m_Size - i - 1;
                 }
             }
 
-            return Point.Empty;
-        }*/
-    }
+            if (diagCount == m_Size - 1 && emptyDiagRow != -1 && emptyDiagCol != -1)
+            {
+                return new Point(emptyDiagRow, emptyDiagCol);
+            }
+
+            // No winning move found
+            return null;
+        }
+
+        private char getSymbolAtCoordinate(Point i_Coordinate)
+        {
+            return m_Board[i_Coordinate.x, i_Coordinate.y];
+        }
+        public Point FindStrategicMove(char i_AISymbol)
+        {
+            List<Point> potentialWins = new List<Point>();
+            List<Point> opponentPotentialWins = new List<Point>();
+
+            // Check for potential winning moves for both players
+            for (int i = 0; i < m_Size; i++)
+            {
+                for (int j = 0; j < m_Size; j++)
+                {
+                    Point point = new Point(i, j);
+
+                    if (IsSymbolAtCoordinate(point))
+                    {
+                        updateBoardInPosition(i_AISymbol, point);
+
+                        if (checkIfWon(point))
+                        {
+                            potentialWins.Add(point);
+                        }
+                        //maybe i_player2 the other symbol
+                       updateBoardInPosition('X', point);
+
+                        if (checkIfWon(point))
+                        {
+                            opponentPotentialWins.Add(point);
+                        }
+
+                        updateBoardInPosition(' ', point);
+                    }
+                }
+            }
+
+            // If there are potential winning moves for the current player, return one of them
+            if (potentialWins.Count > 0)
+            {
+                return potentialWins[0];
+            }
+            // If there are potential winning moves for the opponent, return a move that blocks them
+            else if (opponentPotentialWins.Count > 0)
+            {
+                return opponentPotentialWins[0];
+            }
+            // Otherwise, return a random empty position on the board
+            else
+            {
+                return GetRandomEmptyPosition();
+            }
+
+        }
+        public Point GetRandomEmptyPosition()
+        {
+            Random rnd = new Random();
+           
+            // Find all empty positions on the board
+            List<Point> emptyPositions = new List<Point>();
+            for (int i = 0; i < m_Size; i++)
+            {
+                for (int j = 0; j < m_Size; j++)
+                {
+                    if (IsSymbolAtCoordinate(new Point(i, j)))
+                    {
+                        emptyPositions.Add(new Point(i, j));
+                    }
+                }
+            }
+
+            // Select a random empty position from the list
+            if (emptyPositions.Count > 0)
+            {
+                int randomIndex = rnd.Next(0, emptyPositions.Count);
+                return emptyPositions[randomIndex];
+            }
+            else
+            {
+                // If there are no empty positions, return (-1,-1) to indicate an error
+                return new Point(-1, -1);
+            }
+        }
+        private int CountPotentialWins(Point position, char player)
+        {
+            int rowWins = 0, colWins = 0, diag1Wins = 0, diag2Wins = 0;
+
+            // count potential row wins
+            for (int i = 0; i < m_Size; i++)
+            {
+                if (i != position.y)
+                {
+                    if (m_Board[position.x, i] == player)
+                    {
+                        rowWins++;
+                    }
+                }
+            }
+
+            // count potential column wins
+            for (int i = 0; i < m_Size; i++)
+            {
+                if (i != position.x)
+                {
+                    if (m_Board[i, position.y] == player)
+                    {
+                        colWins++;
+                    }
+                }
+            }
+
+            // count potential diagonal wins
+            if (position.x == position.y)
+            {
+                for (int i = 0; i < m_Size; i++)
+                {
+                    if (i != position.x)
+                    {
+                        if (m_Board[i, i] == player)
+                        {
+                            diag1Wins++;
+                        }
+                    }
+                }
+            }
+
+            if (position.x + position.y == m_Size - 1)
+            {
+                for (int i = 0; i < m_Size; i++)
+                {
+                    if (i != position.x)
+                    {
+                        if (m_Board[i, m_Size - 1 - i] == player)
+                        {
+                            diag2Wins++;
+                        }
+                    }
+                }
+            }
+
+            return rowWins + colWins + diag1Wins + diag2Wins;
+        }
+    } 
 }

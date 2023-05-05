@@ -24,11 +24,11 @@ namespace UI_X_MIX
             return userChoice == 1;
 
         }
-        public static bool CanPlaceSymbolWithinBoundaries(Point i_Coordinate, int i_BoardSize, Board i_Board)
+        public static bool CanPlaceSymbolWithinBoundaries(Point i_Coordinate, Board i_Board)
         {
             bool validCoordinate = true;
 
-            if (i_Coordinate.x < 0 || i_Coordinate.x >= i_BoardSize || i_Coordinate.y < 0 || i_Coordinate.y >= i_BoardSize)
+            if (i_Coordinate.x < 0 || i_Coordinate.x >= i_Board.Size || i_Coordinate.y < 0 || i_Coordinate.y >= i_Board.Size)
             {
                 Console.WriteLine("Invalid coordinate. Please enter a coordinate within the board boundaries.");
                 validCoordinate = false;
@@ -40,7 +40,7 @@ namespace UI_X_MIX
             }
             return validCoordinate;
         }
-        public static Point GetPositionInput(int i_BoardSize, Board i_Board)
+        public static Point GetPositionInput(Board i_Board)
         {
             Point coordinateUser;
             while (true)
@@ -63,7 +63,7 @@ namespace UI_X_MIX
                 int y = int.Parse(parts[1]);
 
                 coordinateUser = new Point(x - 1, y - 1);
-                if (!CanPlaceSymbolWithinBoundaries(coordinateUser, i_BoardSize, i_Board))
+                if (!CanPlaceSymbolWithinBoundaries(coordinateUser, i_Board))
                 {
                     continue;
                 }

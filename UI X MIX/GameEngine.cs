@@ -15,26 +15,27 @@ namespace UI_X_MIX
         public static void StartGame(int i_SizeBoard, int i_Mode)
         {
             GameEngine game = new GameEngine();
-            Board m_Board = new Board();
+            Board board = new Board();
             bool userContinue = true;
 
-            while(userContinue)
+            while (userContinue)
             {
-                m_Board.initBoard(i_SizeBoard);
-                game.PlayerMode(m_Board, i_SizeBoard);
+                board.initBoard(i_SizeBoard);
+                //game.PlayerMode(board);
+                game.AIMode(board, 'O');
                 userContinue = UI.IsPlayerContinuing();
-            } 
+            }
         }
-        
-        public void PlayerMode(Board i_Board, int i_SizeBoard)
+
+        public void PlayerMode(Board i_Board)
         {
             bool player1Won = false;
             bool player2Won = false;
             int moveCounter = 1;
 
-            while (!player1Won && !player2Won && moveCounter <= i_SizeBoard * i_SizeBoard)
+            while (!player1Won && !player2Won && moveCounter <= i_Board.Size * i_Board.Size)
             {
-                Point pointPlayer1 = UI.GetPositionInput(i_SizeBoard, i_Board);
+                Point pointPlayer1 = UI.GetPositionInput(i_Board);
                 if (pointPlayer1.x == -1)
                 {
                     Console.WriteLine("Player 1 quit");
@@ -52,13 +53,13 @@ namespace UI_X_MIX
 
                 moveCounter++;
 
-                if (moveCounter > i_SizeBoard * i_SizeBoard)
+                if (moveCounter > i_Board.Size * i_Board.Size)
                 {
                     Console.WriteLine("it is a tie");
                     break;
                 }
 
-                Point pointPlayer2 = UI.GetPositionInput(i_SizeBoard, i_Board);
+                Point pointPlayer2 = UI.GetPositionInput(i_Board);
                 if (pointPlayer2.x == -1)
                 {
                     Console.WriteLine("Player 2 quit");
@@ -78,75 +79,97 @@ namespace UI_X_MIX
             }
             Console.WriteLine("X:{0} points\nO:{1} points", m_Player1Points, m_Player2Points);
         }
-
-      
-    }
-}
-/*
         public void AIMode(Board i_Board, int i_SizeBoard)
         {
-            bool player1Won = false;
-            bool player2Won = false;
+            bool playerWon = false;
             int moveCounter = 1;
 
-            while (player1Won == false && player2Won == false && moveCounter < i_SizeBoard * i_SizeBoard)
+            while (!playerWon && moveCounter <= i_SizeBoard * i_SizeBoard)
             {
-                // Player 1's turn
-                Point pointPlayer1 = UI.GetPositionInput();
-                if (pointPlayer1.x != -1)
+                Point pointPlayer = UI.GetPositionInput(i_Board);
+                if (pointPlayer.x == -1)
                 {
-                    player1Won = i_Board.updateBoardInPosition(m_Player1, pointPlayer1);
-                    if (!player1Won && moveCounter < i_SizeBoard * i_SizeBoard)
-                    {
-                        // Computer's turn
-                        Point pointPlayer2 = new Point(-1, -1);
-                        if (moveCounter == 1)
-                        {
-                            // If the computer is the first to move, place a mark in a random corner
-                            List<Point> corners = new List<Point>()
-                    {
-                        new Point(0, 0),
-                        new Point(0, i_SizeBoard - 1),
-                        new Point(i_SizeBoard - 1, 0),
-                        new Point(i_SizeBoard - 1, i_SizeBoard - 1)
-                    };
-                            pointPlayer2 = corners[new Random().Next(corners.Count)];
-                        }
-                        else
-                        {
-                            // Check for winning move
-                            pointPlayer2 = i_Board.FindWinningMove(m_Player2);
-                            if (pointPlayer2.x == -1)
-                            {
-                                // Check for blocking move
-                                pointPlayer2 = i_Board.FindWinningMove(m_Player1);
-                                if (pointPlayer2.x == -1)
-                                {
-                                    // Choose a random move
-                                    pointPlayer2 = i_Board.FindRandomEmptyPosition();
-                                }
-                            }
-                        }
-                        player2Won = i_Board.updateBoardInPosition(m_Player2, pointPlayer2);
-                        moveCounter++;
-                    }
-                    else
-                    {
-                        return;
-                    }
+                    Console.WriteLine("Player quit");
+                    break;
                 }
-                else
-                {
-                    return;
-                }
-            }
 
-            if (player1Won || player2Won)
-            {
-                Console.WriteLine(player1Won ? "X won!!!" : "O won!!! ");
+                playerWon = i_Board.updateBoardInPosition(m_Player1, pointPlayer);
+
+                if (playerWon)
+                {
+                    m_Player1Points++;
+                    Console.WriteLine("Player won!!!");
+                    break;
+                }
+
+                moveCounter++;
+
+                if (moveCounter >= i_SizeBoard * i_SizeBoard)
+                {
+                    Console.WriteLine("it is a tie");
+                    break;
+                }
+
+                Point pointAI = i_Board.FindStrategicMove(m_Player2);
+                playerWon = i_Board.updateBoardInPosition(m_Player2, pointAI);
+
+                if (playerWon)
+                {
+                    m_Player2Points++;
+                    Console.WriteLine("Computer won!!!");
+                    break;
+                }
+
+                moveCounter++;
             }
-            else
+            Console.WriteLine("Player:{0} points\nComputer:{1} points", m_Player1Points, m_Player2Points);
+        }
+
+    }
+
+}
+/* public void AIMode(Board i_Board, int i_SizeBoard)
+        {
+            bool playerWon = false;
+            int moveCounter = 1;
+
+            while (!playerWon && moveCounter <= i_SizeBoard * i_SizeBoard)
             {
-                Console.WriteLine("it is a tie");
+                Point pointPlayer = UI.GetPositionInput(i_Board);
+                if (pointPlayer.x == -1)
+                {
+                    Console.WriteLine("Player quit");
+                    break;
+                }
+
+                playerWon = i_Board.updateBoardInPosition(m_Player1, pointPlayer);
+
+                if (playerWon)
+                {
+                    m_Player1Points++;
+                    Console.WriteLine("Player won!!!");
+                    break;
+                }
+
+                moveCounter++;
+
+                if (moveCounter > i_SizeBoard * i_SizeBoard)
+                {
+                    Console.WriteLine("it is a tie");
+                    break;
+                }
+
+                Point pointAI = i_Board.GetRandomEmptyPosition();
+                playerWon = i_Board.updateBoardInPosition(m_Player2, pointAI);
+
+                if (playerWon)
+                {
+                    m_Player2Points++;
+                    Console.WriteLine("Computer won!!!");
+                    break;
+                }
+
+                moveCounter++;
             }
+            Console.WriteLine("Player:{0} points\nComputer:{1} points", m_Player1Points, m_Player2Points);
         }*/
